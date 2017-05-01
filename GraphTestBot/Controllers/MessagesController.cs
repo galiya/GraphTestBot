@@ -1,12 +1,14 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Http.Description;
 using Microsoft.Bot.Connector;
-using Newtonsoft.Json;
+using Neo4jClient;
+using System.Collections.Generic;
+using System.Configuration;
+using Microsoft.Bot.Builder.Dialogs;
+using GraphTestBot.Dialogs;
 
 namespace GraphTestBot
 {
@@ -22,12 +24,49 @@ namespace GraphTestBot
             if (activity.Type == ActivityTypes.Message)
             {
                 ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-                // calculate something for us to return
-                int length = (activity.Text ?? string.Empty).Length;
 
-                // return our reply to the user
-                Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
-                await connector.Conversations.ReplyToActivityAsync(reply);
+
+                await Conversation.SendAsync(activity, () => new StartDialog());
+
+                //var results = graphClient.Cypher
+                //    .Match("(people:Person)")
+                //    .Return(people => people.As<Actor>())
+                //    .Limit(5)
+                //    .Results;
+
+                //// return our reply to the user
+                //Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
+
+                //reply.Attachments = new List<Attachment>();
+
+                //List<CardImage> cardImages = new List<CardImage>();
+                //List<CardAction> cardButtons = new List<CardAction>();
+
+                //foreach (var item in results)
+                //{
+                    
+                //    cardImages.Add(new CardImage(url: "https://upload.wikimedia.org/wikipedia/en/a/a6/Bender_Rodriguez.png"));
+
+                //    CardAction plButton = new CardAction()
+                //    {
+                //        Value = "https://en.wikipedia.org/wiki/Pig_Latin",
+                //        Type = "openUrl",
+                //        Title = "WikiPedia Page"
+                //    };
+                //    cardButtons.Add(plButton);
+
+                //    HeroCard plCard = new HeroCard()
+                //    {
+                //        Title = string.Format("Actor: {0}, born in {1}", item.name, item.born),
+                //        Images = cardImages,
+                //        Buttons = cardButtons
+                //    };
+
+                //    reply.Attachments.Add(plCard.ToAttachment());
+                //}
+                
+
+                //await connector.Conversations.ReplyToActivityAsync(reply);
             }
             else
             {
